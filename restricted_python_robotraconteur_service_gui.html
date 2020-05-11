@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Restricted Python Sandbox</title>
+<style type="text/css" media="screen">
+    #editor { 
+        /*position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;*/
+        width: 800px;
+        height: 500px;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-latest.js"></script>
+<script src="https://robotraconteur.github.io/robotraconteur_pyodide/pyodide.js"></script>
+</head>
+<body>
+
+    <script>
+        
+        function print_div(message)
+        {
+            $("#print_div").append("<p>" + message)
+        }
+
+        async function run_python(){
+            $("#auth").hide()
+            await languagePluginLoader;
+            await pyodide.loadPackage(["numpy"]);      
+            const response = await fetch("restricted_python_robotraconteur_service_gui.py", {cache: "no-store"});
+            const client_py = await response.text();
+            pyodide.runPython(client_py)
+        }
+
+        window.onload=function()
+        {
+            run_python();
+        };
+        
+    </script>
+
+<h1>Restricted Python Sandbox Playground</h1>
+
+<div id="editor"># Example program to run in sandbox
+
+def hello():
+    print("Hello world!")
+</div>
+<br>
+Function name: <input type="text" value="hello" id="function_textbox"/><br>
+<button id="run_button">Run!</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/python");
+</script>
+<div id="print_div"></div> 
+</body>
+</html>
